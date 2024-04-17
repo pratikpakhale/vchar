@@ -1,0 +1,25 @@
+{
+  "name": "googlethis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tsx watch app.ts",
+    "start": "tsc && node dist/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "express": "^4.19.2",
+    "googlethis": "file:../packages/google-this",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/morgan": "~1.9.9",
+    "@types/nodemon": "~1.19.6",
+    "nodemon": "^3.1.0"
+  }
+}

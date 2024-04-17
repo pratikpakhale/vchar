@@ -1,0 +1,16 @@
+{
+  "hosts": {
+    "pratik": "10.0.14.177",
+    "local": "localhost"
+  },
+  "browser": {
+    "host": "pratik",
+    "port": "5000",
+    "max_contexts": 5,
+    "max_pages": 5
+  },
+  "googlethis": {
+    "host": "pratik",
+    "port": "5001"
+  }
+}
