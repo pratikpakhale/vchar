@@ -1,0 +1,77 @@
+{
+  "version": "2.0.0",
+  "presentation": {
+    "echo": false,
+    "reveal": "always",
+    "focus": false,
+    "panel": "shared",
+    "showReuseMessage": true
+  },
+  "tasks": [
+    {
+      "label": "Launch All Services",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "RunBrowser",
+        "RunClientNPM",
+        "RunCore",
+        "RunGoogleThis",
+        "RunAIPython"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "RunBrowser",
+      "type": "shell",
+      "command": "cd browser && npm run dev",
+      "isBackground": true,
+      "presentation": {
+        "group": "browser",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "RunClientNPM",
+      "type": "shell",
+      "command": "cd client && npm run dev",
+      "isBackground": true,
+      "presentation": {
+        "group": "client",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "RunCore",
+      "type": "shell",
+      "command": "cd core && npm run dev",
+      "isBackground": true,
+      "presentation": {
+        "group": "core",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "RunGoogleThis",
+      "type": "shell",
+      "command": "cd googlethis && npm run dev",
+      "isBackground": true,
+      "presentation": {
+        "group": "googlethis",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "RunAIPython",
+      "type": "shell",
+      "command": "source ai/venv/bin/activate && cd ai && python3 app.py",
+      "isBackground": true,
+      "presentation": {
+        "group": "ai",
+        "panel": "shared"
+      }
+    }
+  ]
+}

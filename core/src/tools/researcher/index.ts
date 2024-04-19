@@ -45,7 +45,7 @@ async function researcher(
 
     io.to(session_id).emit('progress', {
       icon: 'google',
-      message: `${tool}: Googling "${google_query}`,
+      message: `${tool}: Googling "${google_query}"`,
     });
 
     if (!google_query) {
