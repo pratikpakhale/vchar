@@ -19,6 +19,9 @@
     "llama_model": "/home/pratz/Desktop/clove/ai/llm/models/llama3_q5.gguf",
     "gemini_model": "gemini-pro",
     "claude_model": "sonnet",
-    "language_model": "llama"
+    "language_model": "llama",
+    "mixedbread_model": "/home/pratz/Desktop/clove/ai/embedding/models/mixedbread",
+    "gemini_embedding_model": "models/embedding-001",
+    "embedding_model": "mixedbread"
   }
 }
