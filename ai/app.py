@@ -10,16 +10,10 @@ def generate_response():
     
     prompt=data['prompt'] 
     context = data['context'] 
-    schema = data['schema'] 
-
-    # example_schema = {
-    #     'contributions': {
-    #         'type': 'str',
-    #         'value': 'what are contributions of elon musk ?'
-    #     },
-    # }
+    schema = data['schema']
     
-    response = generate(query = prompt, context = context, schema=schema)
+    
+    response = generate(query = prompt, context = context, schema=schema, )
 
     # print(response)
     return jsonify(response)

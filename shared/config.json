@@ -16,8 +16,9 @@
   "ai": {
     "host": "pratik",
     "port": "5002",
-    "llama_model_path": "/home/pratz/Desktop/clove/ai/llm/models/llama2.gguf",
+    "llama_model": "/home/pratz/Desktop/clove/ai/llm/models/llama3_q5.gguf",
     "gemini_model": "gemini-pro",
-    "claude_model": "sonnet"
+    "claude_model": "sonnet",
+    "language_model": "llama"
   }
 }

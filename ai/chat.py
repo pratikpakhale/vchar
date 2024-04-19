@@ -7,12 +7,15 @@ from llm import AnthropicClaudeLLM, GeminiLLM, LlamaLLM
 
 from templates.default_prompt import default_prompt_template
 
-def generate(query, context, schema, language_model='llama'):
+from utils.config import config
+LANGUAGE_MODEL = config['ai']['language_model']
+
+def generate(query, context, schema):
   try:
     with suppress_stdout_stderr():
-      if language_model == 'claude':
+      if LANGUAGE_MODEL == 'claude':
         llm = AnthropicClaudeLLM()
-      elif language_model == 'gemini':
+      elif LANGUAGE_MODEL == 'gemini':
         llm = GeminiLLM()
       else:
         llm = LlamaLLM()
@@ -25,16 +28,16 @@ def generate(query, context, schema, language_model='llama'):
 
     prompt = default_prompt_template.safe_substitute(query=query, schema_instructions=schema_instructions, context=context)
 
-    print("------------------------------------------------")
-    print(prompt)
-    print("------------------------------------------------")
+    # print("------------------------------------------------")
+    # print(prompt)
+    # print("------------------------------------------------")
 
     with suppress_stdout_stderr():
       response = llm.invoke(prompt)
 
-    print("language model response",response)
+    # print("Language Model Response: \n\n",response)
 
-    if language_model == 'gemini':
+    if LANGUAGE_MODEL == 'gemini':
       response = response.content
 
     json = extract_json(response)
