@@ -5,6 +5,8 @@ from langchain.schema import Document
 from embedding import GeminiEmbedding, MixedBreadEmbedding
 
 from utils.config import config
+from utils.suppress_log import suppress_stdout_stderr
+
 EMBEDDING_MODEL = config['ai']['embedding_model']
 
 def get_context(query, data):
@@ -14,7 +16,8 @@ def get_context(query, data):
             'description': ctx['description'],
             'favicon': ctx['favicon'],
         }) for ctx in data]
-  text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=250)
+  with suppress_stdout_stderr():
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=250)
   docs = text_splitter.split_documents(documents)
 
   if EMBEDDING_MODEL == 'gemini':

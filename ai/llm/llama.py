@@ -5,7 +5,7 @@ MODEL_PATH = config['ai']['llama_model']
 
 
 # n_gpu_layers = -1 
-n_gpu_layers = 14
+n_gpu_layers = config['ai']['n_gpu_layers']
 n_batch = 512  
 
 def LlamaLLM(callback_manager=None):

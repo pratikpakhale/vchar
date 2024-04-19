@@ -1,5 +1,10 @@
 # Google this
 
+```bash
+npm install
+npm run dev # or npm run start
+```
+
 ## Post request Google Advanced search
 
 ```
@@ -24,7 +29,7 @@
 }
 ```
 
-### Response 
+### Response
 
 results array with links and descriptions and text
 
@@ -34,7 +39,6 @@ results array with links and descriptions and text
 {{baseurl}}/image?q='text'
 ```
 
-### Response 
+### Response
 
 result json with image results links
-

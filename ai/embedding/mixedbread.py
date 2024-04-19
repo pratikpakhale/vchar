@@ -12,6 +12,7 @@ def MixedBreadEmbedding():
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs,
             query_instruction="Represent this sentence for searching relevant information:",
-        )   
+        )
+
   
   return embeddings

@@ -37,9 +37,6 @@ def generate(query, context, schema):
 
     # print("Language Model Response: \n\n",response)
 
-    if LANGUAGE_MODEL == 'gemini':
-      response = response.content
-
     json = extract_json(response)
 
     return json

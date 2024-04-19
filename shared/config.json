@@ -1,6 +1,6 @@
 {
   "hosts": {
-    "pratik": "10.0.14.177",
+    "pratik": "127.0.0.1",
     "local": "localhost"
   },
   "browser": {
@@ -17,11 +17,16 @@
     "host": "pratik",
     "port": "5002",
     "llama_model": "/home/pratz/Desktop/clove/ai/llm/models/llama3_q5.gguf",
+    "n_gpu_layers": "14",
     "gemini_model": "gemini-pro",
     "claude_model": "sonnet",
-    "language_model": "llama",
+    "language_model": "gemini",
     "mixedbread_model": "/home/pratz/Desktop/clove/ai/embedding/models/mixedbread",
     "gemini_embedding_model": "models/embedding-001",
-    "embedding_model": "mixedbread"
+    "embedding_model": "gemini"
+  },
+  "core": {
+    "host": "pratik",
+    "port": "8080"
   }
 }

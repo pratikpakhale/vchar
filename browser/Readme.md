@@ -1,3 +1,9 @@
+```bash
+npm install
+npx playwright install
+npm run dev # or npm run start
+```
+
 | Field       | Description                                                           |
 | ----------- | --------------------------------------------------------------------- |
 | Host        | localhost                                                             |
