@@ -3,6 +3,41 @@ import { NewsCard } from './NewsCard';
 import { FaRegCompass } from 'react-icons/fa6';
 import React from 'react';
 
+const topIndianCompanies = [
+  'Reliance Industries',
+  'Tata Consultancy Services (TCS)',
+  'HDFC Bank',
+  'Infosys',
+  'Hindustan Unilever',
+  'ICICI Bank',
+  'Kotak Mahindra Bank',
+  'State Bank of India (SBI)',
+  'Bharti Airtel',
+  'Wipro',
+  'Axis Bank',
+  'Bajaj Finance',
+  'Tech Mahindra',
+  'Maruti Suzuki India',
+  'NTPC',
+  'Larsen & Toubro',
+  'Sun Pharmaceutical Industries',
+  'Asian Paints',
+  'Tata Steel',
+  'HCL Technologies',
+  'ITC Limited',
+  'Power Grid Corporation of India',
+  'UltraTech Cement',
+  'Bharat Petroleum Corporation',
+  'IndusInd Bank',
+  'Oil and Natural Gas Corporation (ONGC)',
+  'Coal India',
+  'Mahindra & Mahindra',
+  'Tata Motors',
+  "Dr. Reddy's Laboratories",
+];
+
+const randomIndex = Math.floor(Math.random() * topIndianCompanies.length);
+
 export default function NewsContainer() {
   const [isLoading, setIsLoading] = useState(true); // Set initial loading state to true
   const [newsdata, setNewsData] = useState([]);
@@ -17,7 +52,9 @@ export default function NewsContainer() {
       };
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:5004/competitor?company_name=tata motors`,
+        `${import.meta.env.VITE_APP_SERVER_ENDPOINT}/competitor?company_name=${
+          topIndianCompanies[randomIndex]
+        }`,
         options
       );
 

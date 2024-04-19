@@ -6,8 +6,8 @@ import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 import config from '../../shared/config.json';
-
 import { manager, invoke_tools } from './tools/manager';
+import { getURL } from './utils';
 
 const app = express();
 app.use(cors());
@@ -39,6 +39,41 @@ app.get('/search', async (req, res) => {
       response: 'Something went wrong. Please try again.',
       sources: [],
     });
+  }
+});
+
+app.get('/competitor', (req, res) => {
+  try {
+    const company_name = req.query.company_name;
+    const before = req.query?.before;
+    const after = req.query?.after;
+
+    fetch(getURL('googlethis') + '/search?q=' + company_name, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        options: {
+          safe: true,
+          params: {
+            inurl: 'vs',
+            intitle: company_name,
+            intext: 'competitor',
+            before,
+            after,
+          },
+        },
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // @ts-ignore
+        const results = data?.results;
+        res.status(200).json(results);
+      });
+  } catch (error) {
+    console.log(error);
   }
 });
 

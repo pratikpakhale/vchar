@@ -104,7 +104,7 @@ const Search: React.FC = () => {
   const handleSearch = async (prompt?: string) => {
     const id = uuidv4();
 
-    sessionStorage.setItem(id, prompt || promptValue);
+    localStorage.setItem(id, prompt || promptValue);
 
     navigate('/search/' + id);
   };
