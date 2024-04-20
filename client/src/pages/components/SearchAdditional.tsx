@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Input } from '../../components/ui/input';
-import { Send, LoaderCircle } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 function SearchAdditional({
   submit,

@@ -71,7 +71,6 @@ export default function OutputContainer() {
       } catch (e) {
         console.log(e);
       }
-      console.log('refresh?');
       setDeeperInputLoading(true);
       start();
     }

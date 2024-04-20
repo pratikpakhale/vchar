@@ -99,9 +99,9 @@ const manager = async (user_prompt: string, id: string, deeper: boolean) => {
     let data = response.data;
 
     // @ts-ignore
-    let tools = data?.tools || ['generic_researcher'];
+    let tools = data?.tools || [];
 
-    return tools;
+    return tools.length > 0 ? tools : ['generic_researcher'];
   } catch (e) {
     io.to(id).emit('progress', {
       icon: 'error',

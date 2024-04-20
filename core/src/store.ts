@@ -41,7 +41,6 @@ export class JSONStore implements Store {
   }
 
   append(key: string, value: Conversation): void {
-    console.log('storing for :', key);
     this.data[key] = [...(this.data[key] || []), value];
     fs.writeFileSync(PATH, JSON.stringify(this.data));
   }
