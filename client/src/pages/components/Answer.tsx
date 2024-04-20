@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card } from '../../components/ui/card';
+import Markdown from 'react-markdown';
 
 import Progress from './Progress';
 
@@ -42,7 +43,7 @@ function Answer({
             key={index}
             className="text-lg nato-sans mt-4 overflow-y-auto h-full"
           >
-            {answer}
+            <Markdown>{answer}</Markdown>
           </div>
         ))}
       </div>

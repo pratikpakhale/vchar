@@ -27,6 +27,8 @@
   },
   "core": {
     "host": "pratik",
-    "port": "8080"
+    "port": "8080",
+    "googlethis_multiple_query": "true",
+    "max_google_queries": "5"
   }
 }

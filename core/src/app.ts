@@ -48,7 +48,16 @@ app.get('/competitor', (req, res) => {
   try {
     const company_name = req.query.company_name;
     const before = req.query?.before;
-    const after = req.query?.after;
+
+    const today: Date = new Date();
+    const yesterday: Date = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    const year: number = yesterday.getFullYear();
+    const month: string = String(yesterday.getMonth() + 1).padStart(2, '0');
+    const day: string = String(yesterday.getDate()).padStart(2, '0');
+
+    const after: string = `${year}-${month}-${day}`;
 
     fetch(getURL('googlethis') + '/search?q=' + company_name, {
       method: 'POST',
@@ -59,10 +68,10 @@ app.get('/competitor', (req, res) => {
         options: {
           safe: true,
           params: {
-            inurl: 'vs',
+            // inurl: 'vs',
             intitle: company_name,
-            intext: 'competitor',
-            before,
+            intext: 'stock OR share',
+            // before,
             after,
           },
         },

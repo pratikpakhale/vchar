@@ -24,3 +24,5 @@ export function getURL(service: Service) {
   // @ts-ignore
   return `http://${config.hosts[host]}:${port}`;
 }
+
+export { config };

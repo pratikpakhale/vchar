@@ -38,6 +38,13 @@ export default function OutputContainer() {
     setIsRunning(false);
   };
 
+  const reset = () => {
+    // @ts-ignore
+    clearInterval(intervalRef.current);
+    setTime(0);
+    setIsRunning(false);
+  };
+
   const formatTime = (time: number): string => {
     const padTime = (time: number): string => {
       return time.toString().padStart(2, '0');
@@ -56,6 +63,8 @@ export default function OutputContainer() {
         { icon: 'rag', message: `Researching for ${deeperPrompt}` },
         ...progress,
       ]);
+
+      reset();
 
       try {
         fetch(

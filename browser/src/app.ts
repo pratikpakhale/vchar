@@ -66,7 +66,7 @@ app.post('/', async (req: Request, res: Response) => {
 
     res.json(response);
   } catch (e: any) {
-    console.log(e);
+    console.log(e.message);
     res.status(500).json({
       message: e.message,
     });

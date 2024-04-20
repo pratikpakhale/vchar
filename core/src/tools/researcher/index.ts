@@ -7,10 +7,14 @@ const GOOGLE_BASE_URL = getURL('googlethis');
 const AI_BASE_URL = getURL('ai');
 
 import googlethisTemplate from './googlethis_template';
+import googlethisMultipleTemplate from './googlethis_multiple_template';
+import getAnswerTemplate from './get_answer_template';
 
 import { JSONStore } from '../../store';
 
 import { io } from '../../app';
+
+import { config } from '../../utils';
 
 async function researcher(
   user_prompt: string,
@@ -38,25 +42,90 @@ async function researcher(
       chat_history_string += `User: ${chat.prompt}\nContext: ${chat.context}\nAI: ${chat.answer}\n\n`;
     });
 
-    let response = await axios({
-      method: 'post',
-      url: `${AI_BASE_URL}/generate_response`,
-      data: {
-        prompt: googlethisTemplate(
-          user_prompt,
-          research_context,
-          chat_history_string
-        ),
-        schema: `{"prompt": { "type": "str", "value":"google search query based on research context and user prompt"  } }`,
-        context: 'No context, use your known knowledge of LLM',
-      },
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    let response;
+
+    if (!config.core.googlethis_multiple_query) {
+      response = await axios({
+        method: 'post',
+        url: `${AI_BASE_URL}/generate_response`,
+        data: {
+          prompt: googlethisTemplate(user_prompt, research_context),
+          schema: `{"prompt": { "type": "str", "value":"google search query based on research context and user prompt"  } }`,
+          context: chat_history_string,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } else {
+      response = await axios({
+        method: 'post',
+        url: `${AI_BASE_URL}/generate_response`,
+        data: {
+          prompt: googlethisMultipleTemplate(
+            user_prompt,
+            research_context,
+            config.core.max_google_queries
+          ),
+          schema: `{"prompts": { "type": "list", "value":"google search queries list based on research context and user prompt"  } }`,
+          context: chat_history_string,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
+    io.to(session_id).emit('progress', {
+      icon: 'rag',
+      message: `${tool}: Answering based on current context`,
     });
 
+    if (chat_history.length > 0) {
+      axios({
+        method: 'post',
+        url: `${AI_BASE_URL}/generate_response`,
+        data: {
+          prompt: getAnswerTemplate(user_prompt, research_context),
+          schema: `{"answer": { "type": "str", "value":"answer based on context"  } }`,
+          context: chat_history_string,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((response) => {
+        let answer = `**Answer based on current research**\n\n${response.data?.answer}`;
+        if (
+          chat_history_string.includes(response.data?.answer) ||
+          answer.includes('am sorry') ||
+          answer.includes('cannot answer') ||
+          answer.includes('apologize')
+        )
+          return;
+        if (answer.length > 0) {
+          store.append(session_id, {
+            prompt: user_prompt,
+            context: '',
+            answer,
+            sources: [],
+          });
+          io.to(session_id).emit('response', {
+            tool: tool,
+            answer,
+            sources: [],
+          });
+        }
+      });
+    }
+
     let data = response.data;
-    const google_query = data.prompt;
+    let google_queries = config.core.googlethis_multiple_query
+      ? data.prompts
+      : [data.prompt];
+
+    google_queries.length = Math.min(google_queries.length, 5);
+
+    let google_query = google_queries.join(', ');
 
     io.to(session_id).emit('progress', {
       icon: 'google',
@@ -67,24 +136,33 @@ async function researcher(
       throw new Error('Google query not generated');
     }
 
-    response = await axios({
-      method: 'post',
-      url: `${GOOGLE_BASE_URL}/search?q=${google_query}`,
-      data: {
-        options: {
-          safe: true,
-          params: {},
-        },
-      },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    let promises: Promise<any>[] = [];
 
-    data = response.data;
+    let results: any = [];
 
-    const results = data.results;
+    for (let i = 0; i < google_queries.length; i++) {
+      promises.push(
+        axios({
+          method: 'post',
+          url: `${GOOGLE_BASE_URL}/search?q=${google_queries[i]}`,
+          data: {
+            options: {
+              safe: true,
+              params: {},
+            },
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => {
+            results = [...results, ...response.data.results];
+          })
+          .catch((error) => console.log('error', error))
+      );
+    }
 
+    await Promise.all(promises);
     io.to(session_id).emit('progress', {
       icon: 'browser',
       message: `${tool}: Reading the search results`,
@@ -97,7 +175,7 @@ async function researcher(
       title: string;
     }[] = [];
 
-    const promises: Promise<any>[] = [];
+    promises = [];
     for (let i = 0; i < results.length; i++) {
       promises.push(
         fetch(BROWSER_BASE_URL, {
@@ -113,13 +191,15 @@ async function researcher(
         })
           .then((response: Response) => response.json())
           .then((data: any) => {
-            responses.push({
-              text: data?.TEXT,
-              url: results[i]?.url,
-              favicon: results[i]?.favicons.high_res,
-              description: results[i]?.description,
-              title: results[i]?.title,
-            });
+            try {
+              responses.push({
+                text: data?.TEXT,
+                url: results[i]?.url,
+                favicon: results[i]?.favicons.high_res,
+                description: results[i]?.description,
+                title: results[i]?.title,
+              });
+            } catch (e) {}
           })
           .catch((error: any) => console.log('error', error))
       );
@@ -127,10 +207,20 @@ async function researcher(
 
     await Promise.all(promises);
 
+    console.log(
+      'BROWSER EFFECIENCY - ',
+      (responses.length / results.length) * 100 + '%'
+    );
+
     io.to(session_id).emit('progress', {
       icon: 'rag',
-      message: `${tool}: Reading done. Retrieveing necessary information`,
+      message: `${tool}: Retrieveing necessary information`,
     });
+
+    const QUERY = `${user_prompt} 
+      Research Context: ${research_context}\n
+      Chat History: ${chat_history_string}
+    `;
 
     response = await axios({
       url: `${AI_BASE_URL}/get_context`,
@@ -139,14 +229,14 @@ async function researcher(
         'Content-Type': 'application/json',
       },
       data: {
-        query: google_query,
+        query: QUERY,
         context: responses,
       },
     });
 
     io.to(session_id).emit('progress', {
       icon: 'llm',
-      message: `${tool}: Retrieved necessary information. Generating a response for you`,
+      message: `${tool}: Generating a response for you.`,
     });
 
     data = response.data;
@@ -210,7 +300,7 @@ async function researcher(
       },
     });
 
-    let answer = response.data?.answer;
+    let answer = `**${tool}**\n\n${response.data?.answer}`;
 
     io.to(session_id).emit('progress', {
       icon: 'llm',
