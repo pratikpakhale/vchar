@@ -1,4 +1,3 @@
-
 import Search from './components/Search';
 import { useMyContext } from '../pages/utils/SideBarContext';
 
@@ -6,7 +5,6 @@ function Home() {
   //@ts-ignore
   const { isCollapsed } = useMyContext();
   return (
-
     <div
       style={{
         width: isCollapsed ? '94%' : '86%',

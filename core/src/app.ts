@@ -8,6 +8,7 @@ import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import config from '../../shared/config.json';
 import { manager, invoke_tools } from './tools/manager';
 import { getURL } from './utils';
+import { JSONStore } from './store';
 
 const app = express();
 app.use(cors());
@@ -77,13 +78,57 @@ app.get('/competitor', (req, res) => {
   }
 });
 
+app.get('/library', (_, res) => {
+  try {
+    const store = new JSONStore();
+    const history = store.getAll();
+
+    let filteredHistory = Object.keys(history).map((key) => {
+      return {
+        id: key,
+        prompt: history[key][0]?.prompt,
+        answer: history[key][0]?.answer,
+      };
+    });
+
+    res.status(200).json(filteredHistory);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+const pastEvents: {
+  [key: string]: { event: string; data: any }[];
+} = {};
+
+const pushPastEvent = (sessionId: string, event: string, data: any) => {
+  if (!pastEvents[sessionId]) {
+    pastEvents[sessionId] = [];
+  }
+  pastEvents[sessionId].push({ event, data });
+};
+
 const ioConfig = (
   io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>
 ) => {
   io.on('connection', (socket: Socket) => {
     const sessionId = socket.handshake.query.sessionId || 'default';
+
+    const sendPastEvents = () => {
+      // @ts-ignore
+      if (!sessionId || !pastEvents[sessionId]) return;
+
+      // @ts-ignore
+      pastEvents[sessionId].forEach((event) => {
+        io.to(sessionId).emit(event.event, event.data);
+      });
+      // @ts-ignore
+      pastEvents[sessionId] = [];
+    };
+
     console.log(`Socket connected with session ID: ${sessionId}`);
     socket.join(sessionId);
+    sendPastEvents();
     socket.on('disconnect', () => {
       console.log(`User disconnected with session ID: ${sessionId}`);
     });
@@ -103,6 +148,10 @@ export const io = new Server(server, {
 });
 
 ioConfig(io);
+export const emitEvent = (sessionId: string, event: string, data: any) => {
+  io.to(sessionId).emit(event, data);
+  pushPastEvent(sessionId, event, data);
+};
 
 server.listen(config.core.port, () => {
   console.log('Server is running on port ' + config.core.port);

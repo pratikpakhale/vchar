@@ -38,7 +38,7 @@ function Progress({
       <ScrollArea
         className={`${
           heightFull ? 'h-40' : 'h-16'
-        } w-full rounded-md border mt-4 p-4 overflow-y-auto snap-y snap-mandatory transition-height duration-300 ease-in-out`}
+        }  w-full rounded-md border mt-4 p-4 overflow-y-auto snap-y snap-mandatory transition-height duration-300 ease-in-out`}
         onClick={() => {
           setHeightFull(!heightFull);
         }}

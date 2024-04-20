@@ -13,7 +13,7 @@ export default function OutputContainer() {
 
   const { id } = useParams();
 
-  const prompt = sessionStorage.getItem(id || '');
+  const prompt = localStorage.getItem(id || '');
 
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState<number>(0);
@@ -48,21 +48,10 @@ export default function OutputContainer() {
   useEffect(() => {
     if (id?.length === 0 || !id || !prompt) return;
 
-    start();
-    fetch(
-      import.meta.env.VITE_APP_SERVER_ENDPOINT +
-        `/search?prompt=${prompt}&id=${id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
     const socket = io(
       `${import.meta.env.VITE_APP_SERVER_ENDPOINT}?sessionId=${id}`
     );
+
     // @ts-ignore
     socket.on('progress', (data) => {
       // @ts-ignore
@@ -82,30 +71,41 @@ export default function OutputContainer() {
     socket.on('done', () => {
       stop();
     });
+
+    start();
+    fetch(
+      import.meta.env.VITE_APP_SERVER_ENDPOINT +
+        `/search?prompt=${prompt}&id=${id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
     return () => {
       socket.disconnect();
     };
   }, [id]);
 
   return (
-    <div className="py-4 h-full w-full">
-      <div className="h-full w-full bg-vcharBlack rounded-lg border-1 border-gray-100 flex justify-center items-start">
-        {!isLoading ? (
-          <Answer
-            prompt={prompt || ''}
-            sources={sources}
-            answers={answers}
-            progress={progress}
-            time={formatTime(time)}
-          />
-        ) : (
-          <AnswerSkeleton
-            prompt={prompt || ''}
-            progress={progress}
-            time={formatTime(time)}
-          />
-        )}
-      </div>
+    <div className="h-full w-full  flex justify-center items-start overflow-y-auto">
+      {!isLoading ? (
+        <Answer
+          prompt={prompt || ''}
+          sources={sources}
+          answers={answers}
+          progress={progress}
+          time={formatTime(time)}
+        />
+      ) : (
+        <AnswerSkeleton
+          prompt={prompt || ''}
+          progress={progress}
+          time={formatTime(time)}
+        />
+      )}
     </div>
   );
 }

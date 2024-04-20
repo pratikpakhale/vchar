@@ -17,7 +17,7 @@
     "host": "pratik",
     "port": "5002",
     "llama_model": "/home/pratz/Desktop/clove/ai/llm/models/llama3_q5.gguf",
-    "n_gpu_layers": "14",
+    "n_gpu_layers": "5",
     "gemini_model": "gemini-pro",
     "claude_model": "sonnet",
     "language_model": "gemini",

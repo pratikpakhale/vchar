@@ -8,6 +8,8 @@ const AI_BASE_URL = getURL('ai');
 
 import googlethisTemplate from './googlethis_template';
 
+import { JSONStore } from '../../store';
+
 import { io } from '../../app';
 
 async function researcher(
@@ -17,6 +19,8 @@ async function researcher(
   tool: string
 ) {
   try {
+    const store = new JSONStore();
+
     io.to(session_id).emit('progress', {
       icon: 'tool',
       message: 'Running ' + tool,
@@ -27,11 +31,22 @@ async function researcher(
       message: `${tool}: Generating Google search query`,
     });
 
+    const chat_history = store.get(session_id);
+
+    let chat_history_string = '';
+    chat_history.forEach((chat) => {
+      chat_history_string += `User: ${chat.prompt}\nContext: ${chat.context}\nAI: ${chat.answer}\n\n`;
+    });
+
     let response = await axios({
       method: 'post',
       url: `${AI_BASE_URL}/generate_response`,
       data: {
-        prompt: googlethisTemplate(user_prompt, research_context),
+        prompt: googlethisTemplate(
+          user_prompt,
+          research_context,
+          chat_history_string
+        ),
         schema: `{"prompt": { "type": "str", "value":"google search query based on research context and user prompt"  } }`,
         context: 'No context, use your known knowledge of LLM',
       },
@@ -208,6 +223,13 @@ async function researcher(
 
     io.to(session_id).emit('response', {
       tool,
+      answer,
+      sources,
+    });
+
+    store.append(session_id, {
+      prompt: user_prompt,
+      context: context,
       answer,
       sources,
     });

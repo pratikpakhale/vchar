@@ -4,8 +4,8 @@ import GenericResearch from './generic_research';
 import Tool from './Tool';
 
 import { getURL } from '../utils';
-
-import { io } from '../app';
+import { io, emitEvent } from '../app';
+import { JSONStore } from '../store';
 
 const AI_BASE_URL = getURL('ai');
 
@@ -47,35 +47,64 @@ const response_schema = `{
 }`;
 
 const manager = async (user_prompt: string, id: string) => {
-  io.to(id).emit('progress', {
-    icon: 'tool',
-    message: 'Selecting tools to satisfy your query...',
-  });
+  try {
+    const store = new JSONStore();
 
-  const response = await axios({
-    method: 'post',
-    url: `${AI_BASE_URL}/generate_response`,
-    data: {
-      prompt: template(user_prompt),
-      schema: response_schema,
-      context: 'no context, use your known knowledge of LLM',
-    },
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+    const history = store.get(id);
 
-  io.to(id).emit('progress', {
-    icon: 'tool',
-    message: 'Selected tools are - ' + response.data.tools.join(', '),
-  });
+    if (history.length > 0) {
+      emitEvent(id, 'progress', {
+        icon: 'rag',
+        message: 'Restored the session',
+      });
+      history.forEach((chat) => {
+        emitEvent(id, 'response', {
+          tool: 'manager',
+          answer: chat.answer,
+          sources: chat.sources,
+        });
+      });
+      emitEvent(id, 'done', null);
+      return [];
+    }
 
-  let data = response.data;
+    io.to(id).emit('progress', {
+      icon: 'tool',
+      message: 'Selecting tools to satisfy your query',
+    });
 
-  // @ts-ignore
-  const tools = data?.tools || [];
+    const response = await axios({
+      method: 'post',
+      url: `${AI_BASE_URL}/generate_response`,
+      data: {
+        prompt: template(user_prompt),
+        schema: response_schema,
+        context: 'no context, use your known knowledge of LLM',
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  return tools;
+    io.to(id).emit('progress', {
+      icon: 'tool',
+      message: 'Selected tools are - ' + response.data.tools.join(', '),
+    });
+
+    let data = response.data;
+
+    // @ts-ignore
+    const tools = data?.tools || [];
+
+    return tools;
+  } catch (e) {
+    io.to(id).emit('progress', {
+      icon: 'error',
+      message: 'Error occured while selecting tools',
+    });
+    io.to(id).emit('done');
+    throw e;
+  }
 };
 
 const invoke_tools = async (
@@ -83,33 +112,42 @@ const invoke_tools = async (
   user_prompt: string,
   id: string
 ) => {
-  const responses: {
-    response: string;
-    sources: {
-      title: string;
-      description: string;
-      url: string;
-      favicon: string;
-    }[];
-  }[] = [];
+  try {
+    const responses: {
+      response: string;
+      sources: {
+        title: string;
+        description: string;
+        url: string;
+        favicon: string;
+      }[];
+    }[] = [];
 
-  const promises = [];
+    const promises = [];
 
-  for (const tool of tools) {
-    if (TOOL_MAP[tool]) {
-      promises.push(
-        TOOL_MAP[tool].invoke(user_prompt, id).then((response) => {
-          responses.push(response);
-        })
-      );
+    for (const tool of tools) {
+      if (TOOL_MAP[tool]) {
+        promises.push(
+          TOOL_MAP[tool].invoke(user_prompt, id).then((response) => {
+            responses.push(response);
+          })
+        );
+      }
     }
+
+    await Promise.all(promises);
+
+    io.to(id).emit('done');
+
+    return responses;
+  } catch (e) {
+    io.to(id).emit('progress', {
+      icon: 'error',
+      message: 'Error in running tools',
+    });
+    io.to(id).emit('done');
+    throw e;
   }
-
-  await Promise.all(promises);
-
-  io.to(id).emit('done');
-
-  return responses;
 };
 
 export { manager, invoke_tools };

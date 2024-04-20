@@ -59,7 +59,12 @@ function SideBar({ setisCollapsed, isCollapsed }) {
             </div>
           </Button>
         </div>
-        <div className=" mt-1 w-full flex items-center justify-center  hover:bg-white/10">
+        <div
+          className=" mt-1 w-full flex items-center justify-center  hover:bg-white/10"
+          onClick={() => {
+            navigate('/library');
+          }}
+        >
           <Button className="space-grotesk  text-lg w-3/4 h-11 flex items-center  justify-center text-gray-400 bg-transparent pointer-events-none">
             <div className="flex flex-row space-x-2">
               <div className="pt-1">
@@ -173,7 +178,12 @@ function SideBar({ setisCollapsed, isCollapsed }) {
               </div>
             </Button>
           </div>
-          <div className=" mt-1 w-full flex items-center justify-start  hover:bg-white/5 rounded-full cursor-pointer">
+          <div
+            className=" mt-1 w-full flex items-center justify-start  hover:bg-white/5 rounded-full cursor-pointer"
+            onClick={() => {
+              navigate('/library');
+            }}
+          >
             <Button className="space-grotesk  text-lg w-3/4 h-11 flex items-center  justify-start text-gray-400 bg-transparent pointer-events-none">
               <div className="flex flex-row space-x-2">
                 <div className="pt-1">

@@ -32,13 +32,16 @@ function Answer({
   time: string;
 }) {
   return (
-    <div className="w-2/3 h-full flex justify-center items-start pt-10">
+    <div className="w-2/3 max-h-full flex justify-center items-start pt-10">
       <div className="w-2/3">
         <div className="text-2xl space-grotesk">{prompt}</div>
         <Progress progress={progress} fullHeight={false} time={time} />
         <div className="mt-3"></div>
         {answers.map((answer, index) => (
-          <div key={index} className="text-lg nato-sans mt-4">
+          <div
+            key={index}
+            className="text-lg nato-sans mt-4 overflow-y-auto h-full"
+          >
             {answer}
           </div>
         ))}
