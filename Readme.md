@@ -1,4 +1,4 @@
-# Clove
+# vChar
 
 To run the project, go to respective directories of the services and check the Readme.md file for instructions.
 
