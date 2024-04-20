@@ -20,6 +20,7 @@ app.get('/search', async (req, res) => {
   try {
     let prompt = req.query?.prompt;
     let id = req.query?.id;
+    let deeper = req.query?.deeper || false;
 
     if (!prompt) {
       throw new Error('Prompt is required');
@@ -30,7 +31,7 @@ app.get('/search', async (req, res) => {
     });
 
     // @ts-ignore
-    manager(prompt, id).then((tools) => {
+    manager(prompt, id, deeper).then((tools) => {
       // @ts-ignore
       invoke_tools(tools, prompt, id);
     });

@@ -5,6 +5,15 @@
 @tailwind components;
 @tailwind utilities;
 
+::selection {
+  background: rgba(144, 87, 187, 0.034);
+  color: #69398d;
+}
+
+* {
+  color: #cfc2c2
+}
+
 
 .space-grotesk {
   font-family: "Space Grotesk", sans-serif;

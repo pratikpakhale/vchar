@@ -32,7 +32,7 @@ function Answer({
   time: string;
 }) {
   return (
-    <div className="w-2/3 max-h-full flex justify-center items-start pt-10">
+    <div className="w-2/3 max-h-full flex justify-center items-start pt-10 pb-40">
       <div className="w-2/3">
         <div className="text-2xl space-grotesk">{prompt}</div>
         <Progress progress={progress} fullHeight={false} time={time} />

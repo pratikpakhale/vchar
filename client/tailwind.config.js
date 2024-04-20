@@ -23,6 +23,7 @@ module.exports = {
       colors: {
         purple: '#c77dff',
         vcharBlack: '#191a1a',
+        vcharBlack2: '#202222',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

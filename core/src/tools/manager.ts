@@ -46,13 +46,13 @@ const response_schema = `{
   }
 }`;
 
-const manager = async (user_prompt: string, id: string) => {
+const manager = async (user_prompt: string, id: string, deeper: boolean) => {
   try {
     const store = new JSONStore();
 
     const history = store.get(id);
 
-    if (history.length > 0) {
+    if (history.length > 0 && !deeper) {
       emitEvent(id, 'progress', {
         icon: 'rag',
         message: 'Restored the session',
@@ -65,6 +65,7 @@ const manager = async (user_prompt: string, id: string) => {
         });
       });
       emitEvent(id, 'done', null);
+
       return [];
     }
 
@@ -72,6 +73,10 @@ const manager = async (user_prompt: string, id: string) => {
       icon: 'tool',
       message: 'Selecting tools to satisfy your query',
     });
+
+    let all_queries = history.map((chat) => chat.prompt);
+
+    user_prompt = user_prompt + '\n' + all_queries.join('\n');
 
     const response = await axios({
       method: 'post',
@@ -94,7 +99,7 @@ const manager = async (user_prompt: string, id: string) => {
     let data = response.data;
 
     // @ts-ignore
-    const tools = data?.tools || [];
+    let tools = data?.tools || ['generic_researcher'];
 
     return tools;
   } catch (e) {
@@ -103,6 +108,7 @@ const manager = async (user_prompt: string, id: string) => {
       message: 'Error occured while selecting tools',
     });
     io.to(id).emit('done');
+    // console.log(e.message);
     throw e;
   }
 };

@@ -5,6 +5,8 @@ import Answer from './Answer';
 import AnswerSkeleton from './AnswerSkeleton';
 import { io } from 'socket.io-client';
 
+import SearchAdditional from './SearchAdditional';
+
 export default function OutputContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState([]);
@@ -45,6 +47,36 @@ export default function OutputContainer() {
     return `${minutes}:${seconds}`;
   };
 
+  const [deeperInputLoading, setDeeperInputLoading] = useState(false);
+
+  const handleSubmitPrompt = (deeperPrompt: string) => {
+    if (deeperPrompt) {
+      setProgress([
+        // @ts-ignore
+        { icon: 'rag', message: `Researching for ${deeperPrompt}` },
+        ...progress,
+      ]);
+
+      try {
+        fetch(
+          import.meta.env.VITE_APP_SERVER_ENDPOINT +
+            `/search?prompt=${deeperPrompt}&id=${id}&deeper=true`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+      } catch (e) {
+        console.log(e);
+      }
+      console.log('refresh?');
+      setDeeperInputLoading(true);
+      start();
+    }
+  };
+
   useEffect(() => {
     if (id?.length === 0 || !id || !prompt) return;
 
@@ -58,10 +90,13 @@ export default function OutputContainer() {
       setProgress((prev) => [data, ...prev]);
       if (data.icon === 'error') {
         setIsLoading(false);
+        setDeeperInputLoading(false);
+        stop();
       }
     });
     socket.on('response', (data) => {
       setIsLoading(false);
+      setDeeperInputLoading(false);
 
       // @ts-ignore
       setAnswers((prev) => [...prev, data?.answer]);
@@ -70,6 +105,7 @@ export default function OutputContainer() {
     });
     socket.on('done', () => {
       stop();
+      setDeeperInputLoading(false);
     });
 
     start();
@@ -106,6 +142,14 @@ export default function OutputContainer() {
           time={formatTime(time)}
         />
       )}
+
+      <div className=" flex absolute bottom-5 p-4 w-2/3 items-center justify-center">
+        <SearchAdditional
+          submit={handleSubmitPrompt}
+          disabled={isLoading || deeperInputLoading}
+          isLoading={deeperInputLoading}
+        />
+      </div>
     </div>
   );
 }
