@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from chat import generate
 from retrieval import get_context
 from utils.config import config
-
+    
 app = Flask(__name__)
 
 @app.route('/generate_response', methods=['POST'])

@@ -44,7 +44,10 @@ async function researcher(
 
     let response;
 
-    if (!config.core.googlethis_multiple_query) {
+    if (
+      !config.core.googlethis_multiple_query ||
+      config.core.googlethis_multiple_query === 'false'
+    ) {
       response = await axios({
         method: 'post',
         url: `${AI_BASE_URL}/generate_response`,

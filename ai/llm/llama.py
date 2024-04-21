@@ -13,7 +13,7 @@ def LlamaLLM(callback_manager=None):
     model_path=MODEL_PATH,
     n_gpu_layers=n_gpu_layers,
     n_batch=n_batch,
-    # n_ctx=2048,
+    n_ctx=5000,
     # callback_manager=callback_manager,
     # verbose=True
   )
