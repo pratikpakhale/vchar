@@ -20,8 +20,8 @@
     "n_gpu_layers": "5",
     "gemini_model": "gemini-pro",
     "claude_model": "sonnet",
-    "groq_model": "llama3-70b-8192",
-    "language_model": "groq",
+    "groq_model": "llama3-8b-8192",
+    "language_model": "gemini",
     "mixedbread_model": "/home/pratz/Desktop/clove/ai/embedding/models/mixedbread",
     "gemini_embedding_model": "models/embedding-001",
     "embedding_model": "gemini"
@@ -29,7 +29,7 @@
   "core": {
     "host": "pratik",
     "port": "8080",
-    "googlethis_multiple_query": "false",
+    "googlethis_multiple_query": "true",
     "max_google_queries": "5"
   }
 }
