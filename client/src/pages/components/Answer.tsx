@@ -58,7 +58,7 @@ function Answer({
                 className="mt-2 w-full h-auto hover:text-purple cursor-pointer flex items-center px-6 py-4 text-wrap"
               >
                 <img src={source.favicon} className="h-6 mr-4" />
-                <a href={source.url}>
+                <a target="_blank" href={source.url}>
                   <div>
                     <div className="text-md noto-sans ">
                       {truncateText(source?.title, 50)}

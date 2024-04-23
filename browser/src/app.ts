@@ -43,6 +43,8 @@ app.post('/static', async (req: Request, res: Response) => {
 app.post('/', async (req: Request, res: Response) => {
   const { url, timeout = 10, html, text } = req.body;
 
+  console.log(url);
+
   try {
     const page = await getPage(timeout);
 

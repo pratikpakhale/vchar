@@ -25,6 +25,12 @@ if (!fs.existsSync(PATH)) {
 }
 
 export class JSONStore implements Store {
+  constructor() {
+    if (!fs.existsSync(PATH)) {
+      fs.writeFileSync(PATH, JSON.stringify({}));
+    }
+  }
+
   private data: Record<string, Conversation[]> = JSON.parse(
     fs.readFileSync(PATH, 'utf-8')
   );
@@ -43,5 +49,10 @@ export class JSONStore implements Store {
   append(key: string, value: Conversation): void {
     this.data[key] = [...(this.data[key] || []), value];
     fs.writeFileSync(PATH, JSON.stringify(this.data));
+  }
+
+  delete(key: string): void {
+    delete this.data[key];
+    fs.writeFileSync(PATH, JSON.stringify(this.data, null, 2));
   }
 }

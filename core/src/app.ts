@@ -107,6 +107,17 @@ app.get('/library', (_, res) => {
   }
 });
 
+app.delete('/library/:id', (req, res) => {
+  try {
+    const store = new JSONStore();
+    const id = req.params.id;
+    store.delete(id);
+    res.status(200).json({ id });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 const pastEvents: {
   [key: string]: { event: string; data: any }[];
 } = {};

@@ -21,7 +21,15 @@ async function researcher(
   research_context: string,
   session_id: string,
   tool: string
-) {
+): Promise<{
+  response: string;
+  sources: {
+    title: string;
+    description: string;
+    url: string;
+    favicon: string;
+  }[];
+}> {
   try {
     const store = new JSONStore();
 
@@ -79,12 +87,11 @@ async function researcher(
       });
     }
 
-    io.to(session_id).emit('progress', {
-      icon: 'rag',
-      message: `${tool}: Answering based on current context`,
-    });
-
     if (chat_history.length > 0) {
+      io.to(session_id).emit('progress', {
+        icon: 'rag',
+        message: `${tool}: Answering based on current context`,
+      });
       axios({
         method: 'post',
         url: `${AI_BASE_URL}/generate_response`,
@@ -122,9 +129,10 @@ async function researcher(
     }
 
     let data = response.data;
-    let google_queries = config.core.googlethis_multiple_query
-      ? data.prompts
-      : [data.prompt];
+    let google_queries =
+      config.core.googlethis_multiple_query === 'true'
+        ? data.prompts
+        : [data.prompt];
 
     google_queries.length = Math.min(google_queries.length, 5);
 
@@ -166,6 +174,16 @@ async function researcher(
     }
 
     await Promise.all(promises);
+
+    if (results.length === 0) {
+      io.to(session_id).emit('progress', {
+        icon: 'error',
+        message: `${tool}: No search results found. Please try again later.`,
+      });
+      io.to(session_id).emit('done');
+      throw new Error('No search results found');
+    }
+
     io.to(session_id).emit('progress', {
       icon: 'browser',
       message: `${tool}: Reading the search results`,
@@ -195,6 +213,7 @@ async function researcher(
           .then((response: Response) => response.json())
           .then((data: any) => {
             try {
+              if (!data?.TEXT?.length) return;
               responses.push({
                 text: data?.TEXT,
                 url: results[i]?.url,
@@ -202,7 +221,9 @@ async function researcher(
                 description: results[i]?.description,
                 title: results[i]?.title,
               });
-            } catch (e) {}
+            } catch (e: any) {
+              console.log(e.message);
+            }
           })
           .catch((error: any) => console.log('error', error))
       );
@@ -210,10 +231,13 @@ async function researcher(
 
     await Promise.all(promises);
 
-    console.log(
-      'BROWSER EFFECIENCY - ',
-      (responses.length / results.length) * 100 + '%'
-    );
+    io.to(session_id).emit('progress', {
+      icon: 'browser',
+      message: `${tool}: BROWSER EFFECIENCY - ${(
+        (responses.length / results.length) *
+        100
+      ).toFixed(2)}%`,
+    });
 
     io.to(session_id).emit('progress', {
       icon: 'rag',
@@ -232,7 +256,7 @@ async function researcher(
         'Content-Type': 'application/json',
       },
       data: {
-        query: QUERY,
+        query: google_query,
         context: responses,
       },
     });
@@ -294,7 +318,7 @@ async function researcher(
       method: 'post',
       url: `${AI_BASE_URL}/generate_response`,
       data: {
-        prompt: user_prompt,
+        prompt: QUERY,
         schema: `{"answer": { "type": "str", "value":"answer goes here"  } }`,
         context: context,
       },

@@ -28,7 +28,7 @@ def get_context(query, data):
   db = FAISS.from_documents(docs, embeddings)
   retriever = db.as_retriever()
 
-  context_docs = retriever.get_relevant_documents(query)
+  context_docs = retriever.invoke(query)
 
   return [{
             'text': d.page_content,

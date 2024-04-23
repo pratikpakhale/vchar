@@ -3,7 +3,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from utils.schema import json_to_pydantic
 from utils.preprocess import extract_json
 from utils.suppress_log import suppress_stdout_stderr
-from llm import AnthropicClaudeLLM, GeminiLLM, LlamaLLM
+from llm import AnthropicClaudeLLM, GeminiLLM, LlamaLLM, GroqLLM
 
 from templates.default_prompt import default_prompt_template
 
@@ -17,6 +17,8 @@ def generate(query, context, schema):
         llm = AnthropicClaudeLLM()
       elif LANGUAGE_MODEL == 'gemini':
         llm = GeminiLLM()
+      elif LANGUAGE_MODEL == 'groq':
+        llm = GroqLLM()
       else:
         llm = LlamaLLM()
 
@@ -37,7 +39,15 @@ def generate(query, context, schema):
 
     # print("Language Model Response: \n\n",response)
 
+    try:
+      if response.content:
+        response = response.content
+    except:
+      pass
+    
     json = extract_json(response)
+
+    # print("JSON Response: \n\n",json)
 
     return json
 

@@ -130,6 +130,7 @@ const Search: React.FC = () => {
                     handleSearch();
                   }
                 }}
+                autoFocus={true}
               />
 
               <div className="w-full flex items-center justify-between">
