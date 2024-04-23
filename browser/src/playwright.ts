@@ -41,6 +41,14 @@ async function createPage(
   browserContext: BrowserContext
 ): Promise<PageOptions> {
   const page = await browserContext.newPage();
+  await page.route('**/*', (route) => {
+    return ['image', 'stylesheet', 'font', 'media'].includes(
+      route.request().resourceType()
+    )
+      ? route.abort()
+      : route.continue();
+  });
+
   const timer = setTimeout(() => {}, 0);
   return {
     page,

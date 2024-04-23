@@ -5,7 +5,7 @@ import researcher from '../researcher/index';
 export default class GenericResearch extends Tool {
   async invoke(user_prompt: string, session_id: string) {
     const research_context =
-      'You are a general purpose research agent which will search the web to satisfy user quries. DO NOT INCLUDE any advanced search parameters in the search query';
+      'You are a general purpose research agent which will search the web to satisfy user quries. DO NOT include any google advanced search operators.';
 
     const response = await researcher(
       user_prompt,

@@ -93,7 +93,7 @@ function SideBar({ setisCollapsed, isCollapsed }) {
       </TooltipProvider>
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-between py-6 pl-4 h-screen">
+    <div className="flex flex-col items-center justify-between py-6 h-screen">
       <div className="flex flex-col w-full items-center justify-center">
         <div className="flex items-center justify-center cursor-pointer ">
           <img

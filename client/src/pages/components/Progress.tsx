@@ -38,10 +38,11 @@ function Progress({
       <ScrollArea
         className={`${
           heightFull ? 'h-40' : 'h-16'
-        }  w-full rounded-md border mt-4 p-4 overflow-y-auto snap-y snap-mandatory transition-height duration-300 ease-in-out`}
+        }  w-full rounded-md border mt-4 p-4  snap-y snap-mandatory transition-height duration-300 ease-in-out`}
         onClick={() => {
           setHeightFull(!heightFull);
         }}
+        style={{ scrollPaddingTop: '40px' }} // Adjust the value according to your needs
       >
         {progress.map((item, index) => (
           <div
@@ -59,6 +60,7 @@ function Progress({
           </div>
         )}
       </ScrollArea>
+
       <div className="flex justify-end mt-2">
         <div className="flex items-center space-grotesk">
           <IoMdTimer className="mr-2 scale-105" />

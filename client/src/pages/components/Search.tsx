@@ -121,7 +121,7 @@ const Search: React.FC = () => {
             >
               <Textarea
                 style={{ background: 'transparent' }}
-                placeholder="Search for anything about stocks, companies or markets..."
+                placeholder="Search for anything..."
                 className="text-md noto-sans resize-none"
                 onChange={handleChange}
                 rows={1}

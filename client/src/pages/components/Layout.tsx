@@ -7,7 +7,7 @@ function Layout() {
   return (
     <div className="flex">
       <div
-        className="flex"
+        className="flex items-center justify-center"
         style={{
           width: isCollapsed ? '5%' : '13%',
           transition: 'width 0.2s ease-in-out',
