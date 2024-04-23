@@ -21,7 +21,7 @@
     "gemini_model": "gemini-pro",
     "claude_model": "sonnet",
     "groq_model": "llama3-8b-8192",
-    "language_model": "gemini",
+    "language_model": "groq",
     "mixedbread_model": "/home/pratz/Desktop/clove/ai/embedding/models/mixedbread",
     "gemini_embedding_model": "models/embedding-001",
     "embedding_model": "gemini"

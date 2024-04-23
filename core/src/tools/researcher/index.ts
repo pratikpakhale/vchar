@@ -236,7 +236,7 @@ async function researcher(
       message: `${tool}: BROWSER EFFECIENCY - ${(
         (responses.length / results.length) *
         100
-      ).toFixed(2)}%`,
+      ).toFixed(2)}% for ${responses.length}/${results.length} results.`,
     });
 
     io.to(session_id).emit('progress', {

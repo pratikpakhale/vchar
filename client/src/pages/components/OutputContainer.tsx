@@ -20,12 +20,14 @@ export default function OutputContainer() {
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timeRef = useRef<number>(time);
 
   const start = () => {
     if (!isRunning) {
       const startTime = Date.now() - time;
       intervalRef.current = setInterval(() => {
         setTime(Date.now() - startTime);
+        timeRef.current = Date.now() - startTime;
       }, 100);
       setIsRunning(true);
     }
@@ -42,6 +44,7 @@ export default function OutputContainer() {
     // @ts-ignore
     clearInterval(intervalRef.current);
     setTime(0);
+    timeRef.current = 0;
     setIsRunning(false);
   };
 
@@ -54,15 +57,17 @@ export default function OutputContainer() {
     return `${minutes}:${seconds}`;
   };
 
+  const addProgress = (progress: any) => {
+    progress.message = progress.message + ` [${formatTime(timeRef.current)}]`;
+    // @ts-ignore
+    setProgress((prev) => [progress, ...prev]);
+  };
+
   const [deeperInputLoading, setDeeperInputLoading] = useState(false);
 
   const handleSubmitPrompt = (deeperPrompt: string) => {
     if (deeperPrompt) {
-      setProgress([
-        // @ts-ignore
-        { icon: 'rag', message: `Researching for ${deeperPrompt}` },
-        ...progress,
-      ]);
+      addProgress({ icon: 'rag', message: `Researching for ${deeperPrompt}` });
 
       reset();
 
@@ -95,7 +100,7 @@ export default function OutputContainer() {
     // @ts-ignore
     socket.on('progress', (data) => {
       // @ts-ignore
-      setProgress((prev) => [data, ...prev]);
+      addProgress(data);
       if (data.icon === 'error') {
         setIsLoading(false);
         setDeeperInputLoading(false);
