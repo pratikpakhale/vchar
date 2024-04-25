@@ -1,6 +1,6 @@
 {
   "hosts": {
-    "pratik": "127.0.0.1",
+    "pratik": "10.0.14.116",
     "local": "localhost"
   },
   "browser": {
@@ -29,7 +29,7 @@
   "core": {
     "host": "pratik",
     "port": "8080",
-    "googlethis_multiple_query": "true",
+    "googlethis_multiple_query": "false",
     "max_google_queries": "5"
   }
 }
