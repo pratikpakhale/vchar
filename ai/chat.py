@@ -12,15 +12,15 @@ LANGUAGE_MODEL = config['ai']['language_model']
 
 def generate(query, context, schema):
   try:
-    with suppress_stdout_stderr():
-      if LANGUAGE_MODEL == 'claude':
-        llm = AnthropicClaudeLLM()
-      elif LANGUAGE_MODEL == 'gemini':
-        llm = GeminiLLM()
-      elif LANGUAGE_MODEL == 'groq':
-        llm = GroqLLM()
-      else:
-        llm = LlamaLLM()
+    
+    if LANGUAGE_MODEL == 'claude':
+      llm = AnthropicClaudeLLM()
+    elif LANGUAGE_MODEL == 'gemini':
+      llm = GeminiLLM()
+    elif LANGUAGE_MODEL == 'groq':
+      llm = GroqLLM()
+    else:
+      llm = LlamaLLM()
 
     pydantic_object = json_to_pydantic(schema)
     

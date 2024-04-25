@@ -40,4 +40,4 @@ def get_context_docs():
     return jsonify(docs)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=config['ai']['port'])
+    app.run(debug=True, port=config['ai']['port'], host="0.0.0.0")
