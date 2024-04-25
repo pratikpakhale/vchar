@@ -16,7 +16,8 @@
         "RunClientNPM",
         "RunCore",
         "RunGoogleThis",
-        "RunAIPython"
+        "RunAIPython",
+        "RunTradingView"
       ],
       "group": {
         "kind": "build",
@@ -67,6 +68,16 @@
       "label": "RunAIPython",
       "type": "shell",
       "command": "source ai/venv/bin/activate && cd ai && python3 app.py",
+      "isBackground": true,
+      "presentation": {
+        "group": "ai",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "RunTradingView",
+      "type": "shell",
+      "command": "source tradingview/venv/bin/activate && cd tradingview && python3 app.py",
       "isBackground": true,
       "presentation": {
         "group": "ai",

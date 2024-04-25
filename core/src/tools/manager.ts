@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import GenericResearch from './generic_research';
+import TechnicalAnalysis from './technical_analysis';
 import Tool from './Tool';
 
 import { getURL } from '../utils';
@@ -14,12 +15,17 @@ const TOOLS = [
     name: 'generic_researcher',
     use: 'searches the web generically to satisfy user queries',
   },
+  {
+    name: 'technical',
+    use: 'searches the technical details of the company',
+  },
 ];
 
 const TOOL_MAP: {
   [key: string]: Tool;
 } = {
   generic_researcher: new GenericResearch(),
+  technical: new TechnicalAnalysis(),
 };
 
 const tool_info = TOOLS.map((tool) => {
@@ -30,7 +36,7 @@ const tool_info = TOOLS.map((tool) => {
 
 const template = (
   user_prompt: string
-) => `You are an autonomous web research agent. You are provided with a bunch of in house tools to help you with your research. You are supposed to use these tools to satisfy user queries. 
+) => `You are an autonomous stock, company, and market research agent. You are provided with a bunch of in house tools to help you with your research. You are supposed to use these tools to satisfy user queries. 
 
 Your task is to understand the user query and return a list of names of tools that you would use to satisfy the user query. The response tools must only contain the exact names of the tools that are provided to you.
 

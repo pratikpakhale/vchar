@@ -1,6 +1,7 @@
 {
   "hosts": {
     "pratik": "10.0.14.116",
+    "ratnesh": "0.0.0.0",
     "local": "localhost"
   },
   "browser": {
@@ -26,8 +27,12 @@
     "gemini_embedding_model": "models/embedding-001",
     "embedding_model": "gemini"
   },
+  "tradingview": {
+    "host": "ratnesh",
+    "port": "5003"
+  },
   "core": {
-    "host": "pratik",
+    "host": "local",
     "port": "8080",
     "googlethis_multiple_query": "false",
     "max_google_queries": "5"

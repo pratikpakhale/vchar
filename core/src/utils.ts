@@ -1,6 +1,6 @@
 import config from '../../shared/config.json';
 
-type Service = 'browser' | 'googlethis' | 'ai';
+type Service = 'browser' | 'googlethis' | 'ai' | 'tradingview';
 
 export function getURL(service: Service) {
   let host: string;
@@ -18,6 +18,10 @@ export function getURL(service: Service) {
     case 'ai':
       host = config.ai.host;
       port = config.ai.port;
+      break;
+    case 'tradingview':
+      host = config.tradingview.host;
+      port = config.tradingview.port;
       break;
   }
 
