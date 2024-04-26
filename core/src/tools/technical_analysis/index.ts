@@ -33,8 +33,7 @@ export default class TechnicalAnalysis extends Tool {
         {
           prompt: user_prompt,
           schema: `{
-                "company": { "type": "str", "value":"name of the company user wants to search" },
-                "interval": { "type": "str", "value": "time range of information user wants to search" }
+                "company": { "type": "str", "value":"name of the company user wants to search" }
               }`,
           context:
             'Given the following user prompt, identify the company name from the given prompt',
@@ -121,6 +120,7 @@ export default class TechnicalAnalysis extends Tool {
         sources,
       };
     } catch (error) {
+      console.log(error);
       io.to(session_id).emit('progress', {
         icon: 'error',
         message: `Technical Ananlysis: Error occured. Please try again later. Error: ${error}`,

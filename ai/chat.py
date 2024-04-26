@@ -33,9 +33,7 @@ def generate(query, context, schema):
     # print("------------------------------------------------")
     # print(prompt)
     # print("------------------------------------------------")
-
-    with suppress_stdout_stderr():
-      response = llm.invoke(prompt)
+    response = llm.invoke(prompt)
 
     # print("Language Model Response: \n\n",response)
 
