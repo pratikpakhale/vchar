@@ -13,3 +13,7 @@ To run the project, go to respective directories of the services and check the R
 ## Config
 
 The `shared/config.json` file stores the configuration for all the services, including the models, the network hosts and the ports.
+
+## Demo
+
+![Demo Video](https://github.com/pratikpakhale/vchar/blob/main/docs/demo.webm?raw=true)
