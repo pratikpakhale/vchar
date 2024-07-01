@@ -16,4 +16,5 @@ The `shared/config.json` file stores the configuration for all the services, inc
 
 ## Demo
 
-![Demo Video](https://github.com/pratikpakhale/vchar/blob/main/docs/demo.webm?raw=true)
+[![Demo](http://img.youtube.com/vi/2qvMc0jYv6o/0.jpg)](http://www.youtube.com/watch?v=2qvMc0jYv6o "vChar - The AI Researcher")
+
